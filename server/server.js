@@ -10,13 +10,12 @@ var express = require("express"),
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connects to the MongoDB database collection.
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test");
 
 const connection = mongoose.connection;
 
 connection.once('open', () => {
-    console.log('MongoDB database connection established successfully!');
+    console.log('MongoDB database connection success!');
 });
 
 app.use('/', router);
@@ -32,7 +31,7 @@ router.route('/listings').get((req, res) => {
 });
 
 // Get a single Listing
-router.route('/listing/:id').get((req, res) => {
+router.route('/listings/:id').get((req, res) => {
     Listing.findById(req.params.id, (err, listing) => {
         if (err)
             console.log(err);
@@ -54,7 +53,7 @@ router.route('/listings/add').post((req, res) => {
 });
 
 // Update a Listing
-router.route('/listings/update/:id').post((req, res) => {
+router.route('/listings/update/:id').post((req, res, next) => {
     Listing.findById(req.params.id, (err, listing) => {
         if (!listing)
             return next(new Error('Could not load document'));
@@ -83,5 +82,5 @@ router.route('/listings/delete/:id').get((req, res) => {
     });
   });
 
-// Establishes which port the backend runs on.
-app.listen(4000, () => console.log('Express server running on port 4000'));
+
+app.listen(4000, () => console.log('Running on port 4000'));
